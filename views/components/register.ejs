@@ -1,0 +1,31 @@
+<div id = "register">
+    <form class="form" id="registration-form">
+        <p class="title">Register</p>
+        <p class="input">Username: <input id="username-input" type="text" name="username" class="input-field"></p>
+        <p class="input">Password: <input id="password-input" type="password" name="password" class="input-field"></p>
+        <p class="input">First Name: <input id="firstname-input" type="text" name="firstName" class="input-field"></p>
+        <p class="input">Last Name: <input id="lastname-input" type="text" name="lastName" class="input-field"></p>
+        <p class="submit"><input type="submit" value="Register" class="submit-button"></p>
+    </form>
+    <img class="logo" src="/HISCO_Logo.png">
+</div>
+<script>
+    $("#registration-form").submit(async function(e){
+        e.preventDefault();
+        let attempt = await register($("#username-input").val(),$("#password-input").val(),$("#firstname-input").val(),$("#lastname-input").val())
+        if(attempt.registered){
+            user = attempt.user;
+            states = ["home"]
+            databaseObjects = [false,false];
+            customData = [false,false];
+            window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Home", "/home");
+            await loadStates();
+        }else{
+            if($("#error-message").length){
+                $("#error-message").text(attempt.error)
+            }else{
+                $("#registration-form").append(`<p id='error-message'>${attempt.error}</p>`) 
+            }
+        }
+    })
+</script>

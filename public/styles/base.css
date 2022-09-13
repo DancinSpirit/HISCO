@@ -1,0 +1,103 @@
+@font-face{
+    font-family: 'Calibri';
+    src: url(/fonts/Calibri.ttf);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: "Calibri";
+    font-size: 12pt;
+}
+
+html{
+    height: 100%;
+    width: 100%;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+/*     background-color: #7f7f8f;
+    color: white; */
+}
+
+#sub-base{
+    height: 100%;
+    width: 100%;
+}
+
+#login, #register{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:center;
+}
+
+.title{
+    font-size: 25pt;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.centered{
+    align-self: center;
+    justify-self: center;
+}
+
+.input-field{
+    font-family:'Courier New';
+    font-size: 12pt;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.form{
+    padding: 5px;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.input{
+    padding: 5px;
+    padding-left: 6.5px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.submit{
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.submit-button{
+    padding: 5px;
+    font-weight: bold;
+    background-color: black;
+    color: white;
+    border-radius: 0;
+}
+
+.logo{
+    height: 150px;
+}
+
+.database-folder, .users-folder{
+    padding: 5px;
+}
+
+.fa-folder-open, .fa-file, .fa-plus{
+    margin: 5px;
+}
+
+.add-contents{
+    padding: 5px;
+}

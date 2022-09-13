@@ -1,0 +1,54 @@
+<div id="folder">
+    <p class="title editable" id="name" <%if(user.clearanceLevel==5){%>contentEditable="true"<%}%>><%=folder.name%></p>
+    <%if(folder.folders.length){%>
+        <%for(let x=0; x<folder.folders.length; x++){%>
+            <%if(user.clearanceLevel>=folder.folders[x].clearanceLevel){%>
+                <p class="database-folder" id="<%=x%>"><i class="fa-solid fa-folder-open"></i><%=folder.folders[x].name%></p>
+            <%}%>
+        <%}%>
+    <%}%>
+    <%if(folder.files.length){%>
+        <%for(let x=0; x<folder.files.length; x++){%>
+            <%if((user.clearanceLevel>=folder.files[x].clearanceLevel)||folder.files[x].author==user.fullName()){%>
+                <p class="database-file" id="<%=x%>"><i class="fa-solid fa-file"></i><%=folder.files[x].name%></p>
+            <%}%>
+        <%}%>
+    <%}%>
+    <%if(!folder.name.includes("In Review")){%>
+    <%if(!folder.name.includes("In Progress")){%>
+    <p class="add-folder"><i class="fa-sharp fa-solid fa-plus"></i>Add New Folder</p>   
+    <%}%>
+    <p class="add-file"><i class="fa-sharp fa-solid fa-plus"></i>Add New File</p>  
+    <%}%>
+</div>
+<script>
+    $(".editable").on("input",function(){
+        data = {};
+        data[$(this).attr("id")] = $(this).text();
+        updateDatabaseObject("Folder",folder._id,data)
+    })
+    folder = JSON.parse(`<%-JSON.stringify(folder)%>`); 
+    buttons.openFolder = function(){
+        $(".database-folder").on("click",function(){
+        states = ["folder"]
+        databaseObjects = [[{name: "Folder",id:folder.folders[parseInt($(this).attr("id"))]._id}]];
+        window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Folder", "/folder");
+        loadStates();
+        })  
+    }  
+    buttons.openFolder();
+    buttons.addFolder = function(){
+        $(".add-folder").on("click",async function(){
+            let newFolder = await createDatabaseObject("Folder",{name:"New Folder"})
+            let folders = folder.folders;
+            folders.push(newFolder)
+            console.log(folders);
+            let updatedFolder = await updateDatabaseObject("Folder",folder._id,{folders: folders})
+            console.log(updatedFolder);
+            databaseObjects = [[{name: "Folder",id:newFolder._id}]]
+            window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Folder", "/folder");
+            loadStates();
+        })
+    }
+    buttons.addFolder();
+</script>

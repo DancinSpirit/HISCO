@@ -1,0 +1,29 @@
+<div id="login">
+    <form id="login-form" class="form">
+        <p class="title">Login</p>
+        <p class="input">Username: <input id="username-input" type="text" name="username" class="input-field"></p>
+        <p class="input">Password: <input id="password-input" type="password" name="password" class="input-field"></p>
+        <p class="submit"><input type="submit" value="Login" class="submit-button"></p>
+        <a class="centered" href="/register">Register</a>
+    </form>
+    <img class="logo" src="/HISCO_Logo.png">
+</div>
+<script>
+    $("#login-form").submit(async function(e){
+        e.preventDefault();
+        let attempt = await login($("#username-input").val(),$("#password-input").val())
+        if(attempt.loggedIn){
+            states = ["home"]
+            databaseObjects = [[{name:"Folder",id:"631fa130dfbd34482cc0795d"}]];
+            customData = [false];
+            window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Home", "/home");
+            await loadStates();
+        }else{
+            if($("#error-message").length){
+                $("#error-message").text(attempt.error)
+            }else{
+                $("#login-form").append(`<p id='error-message'>${attempt.error}</p>`) 
+            }
+        }
+    })
+</script>

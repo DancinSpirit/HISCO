@@ -1,0 +1,23 @@
+<div id="home">
+    <p class="title">HISCO Databases</p>
+    <p class="database-folder" id="0"><i class="fa-solid fa-folder-open"></i>🙈 Mizaru Division Database</p>
+    <p class="database-folder" id="2"><i class="fa-solid fa-folder-open"></i>🙉 Kikazaru Division Database</p>
+    <p class="database-folder" id="3"><i class="fa-solid fa-folder-open"></i>🙊 Iwazaru Division Database</p>
+    <p class="database-folder" id="4"><i class="fa-solid fa-folder-open"></i></p>
+    <p class="database-folder" id="1"><i class="fa-solid fa-folder-open"></i>Templates</p>
+    <%if(user.clearanceLevel==5){%>
+        <p class="users-folder" id="users"><i class="fa-solid fa-folder-open"></i>Users</p>
+    <%}%>
+</div>
+<script>
+    folder = JSON.parse(`<%-JSON.stringify(folder)%>`); 
+    buttons.openFolder = function(){
+        $(".database-folder").on("click",function(){
+        states = ["folder"]
+        databaseObjects = [[{name: "Folder",id:folder.folders[parseInt($(this).attr("id"))]._id}]];
+        window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Folder", "/folder");
+        loadStates();
+        })  
+    }  
+    buttons.openFolder();
+</script>
