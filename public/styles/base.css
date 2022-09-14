@@ -2,6 +2,16 @@
     font-family: 'Calibri';
     src: url(/fonts/Calibri.ttf);
 }
+@font-face{
+    font-family: 'Calibri Bold';
+    src: url(/fonts/calibri-bold.ttf);
+}
+
+.courier-new{
+    font-family: "Courier New";
+    font-weight: bold;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -28,6 +38,14 @@ body{
     width: 100%;
 }
 
+.top-padding{
+    padding-top: 10px;
+}
+
+.bottom-padding{
+    padding-bottom: 10px;
+}
+
 #login, #register{
     height: 100%;
     width: 100%;
@@ -37,9 +55,12 @@ body{
     justify-content:center;
 }
 
-.title{
+.title, .login-title{
     font-size: 25pt;
     font-weight: bold;
+    font-family: "Calibri Bold"
+}
+.login-title{
     padding: 5px;
 }
 
@@ -63,13 +84,16 @@ body{
     flex-direction: column;
 }
 
-.input{
-    padding: 5px;
-    padding-left: 6.5px;
+.input, .info-row{
     font-weight: bold;
     display: flex;
     flex-direction: row;
+}
+
+.input{
     justify-content: space-between;
+    padding: 5px;
+    padding-left: 6.5px;
 }
 
 .submit{
@@ -87,7 +111,8 @@ body{
 }
 
 .logo{
-    height: 150px;
+    height: 100px;
+    margin-right:5px;
 }
 
 .database-folder, .users-folder{
@@ -100,4 +125,93 @@ body{
 
 .add-contents{
     padding: 5px;
+}
+
+#file-bar{
+    height: 34px;
+    background-color: #e9e9ee;
+    font-family: "Calibri Bold";
+    padding-left: 5px;
+    font-size: 15pt;
+}
+
+#save{
+    background: #7f7f8f;
+	border-bottom: 4px inset rgba(0,0,0,.5);
+	border-left: 4px inset rgba(0,0,0,.5);
+	border-right: 4px inset rgba(255,255,255,.5);
+	border-top: 4px inset rgba(255,255,255,.5);
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 12pt;
+	margin: 2px;
+	min-width: 10px;
+	padding: 1px;
+	text-transform: uppercase;
+	width: auto;
+    font-family: "Courier-New"
+}
+#save:hover{
+    background: #BCBCBC;
+}
+
+#file-container{
+    height: calc(100% - 34px);
+    width: 100%;
+    background-color: #7f7f8f;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
+    padding: 60px;
+}
+
+#file{
+    height: fit-content;
+    width: 850px;
+    background-color: white;
+    padding: 100px;
+}
+
+.top-section{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.top-left{
+    height: fit-content;
+    width: inherit;
+}
+
+.info-left{
+    font-family: 'Calibri Bold';
+    width: 30%;
+    padding-left: 1px;
+}
+
+.black-box{
+    font-size: 13pt;
+    color: white;
+    background-color: black;
+    width: 100%;
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.item-number{
+    font-family: "Courier New";
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.big-logo{
+    height: 200px;
+}
+
+.paragraph{
+    padding-top: 10px;
 }

@@ -1,5 +1,5 @@
 <div id="folder">
-    <p class="title editable" id="name" <%if(user.clearanceLevel==5){%>contentEditable="true"<%}%>><%=folder.name%></p>
+    <p class="login-title editable" id="name" <%if(user.clearanceLevel==5){%>contentEditable="true"<%}%>><%=folder.name%></p>
     <%if(folder.folders.length){%>
         <%for(let x=0; x<folder.folders.length; x++){%>
             <%if(user.clearanceLevel>=folder.folders[x].clearanceLevel){%>

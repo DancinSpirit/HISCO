@@ -1,0 +1,192 @@
+<div id="file-bar">
+    HISCO File Editor <button id="save">Save</button>
+</div>
+<div id="file-container">
+    <div id="file">
+        <div class="top-section">
+            <div class="top-left">
+                <p <%if((file.status=="inProgress")||(file.status=="inReview")||(user.clearanceLevel==5)){%>contentEditable = "true"<%}%> class="title"><%=file.name%></p>
+                <p class="info-row top-padding bottom-padding"><span class="info-left">Item#:  </span><span <%if((file.status=="inProgress")||(file.status=="inReview")||(user.clearanceLevel==5)){%>contentEditable = "true"<%}%> class="courier-new"><%=file.number%></span></p>
+                <p class="info-row"><span class="info-left">Procedure Class:    </span><span <%if((file.status=="inProgress")||(file.status=="inReview")||(user.clearanceLevel==5)){%>contentEditable = "true"<%}%> class="courier-new"><%=file.procedureClass%></span></p>
+                <p class="info-row"><span class="info-left">Clearance Level:    </span><span <%if((file.status=="inProgress")||(file.status=="inReview")||(user.clearanceLevel==5)){%>contentEditable = "true"<%}%> class="courier-new"><%=file.clearanceLevelString%></span></p>
+            </div>
+            <img class="logo" src="HISCO_Logo.png">
+        </div>
+        <%for(let x=0; x<file.text.length; x++){%>
+            <p id="text-<%=x%>" <%if((file.status=="inProgress")||(file.status=="inReview")||(user.clearanceLevel==5)){%>contentEditable = "true"<%}%> class="text <%=file.text[x].type%>"><%-file.text[x].content%></p>
+        <%}%>
+    </div>
+</div>
+<script>
+    let text = JSON.parse(`<%-JSON.stringify(file.text)%>`); 
+    let highTemporalItemNumber = function(itemNumber, paragraph){
+        let test = true;
+        if(itemNumber.split("-")[1].length!="2"){
+            test = false;
+        }
+        if(itemNumber.split("-")[2].length!="2"){
+            test = false;
+        }
+        for(let x=0; x<itemNumber.split("-").length; x++){
+            for(let y=0; y<itemNumber.split("-")[x].length; y++){
+                if(isNaN(itemNumber.split("-")[x][y])){
+                    test = false;
+                }
+                if(itemNumber.split("-")[x][y]==" "){
+                    test = false;
+                }
+            }
+        }
+        if(test){
+            formatItemNumber(" " + itemNumber, paragraph)
+        }
+    }
+    let mediumTemporalItemNumber = function(itemNumber, paragraph){
+        let test = true;
+        if(itemNumber.split("-")[1].length!="4"){
+            test = false;
+        }
+        for(let x=0; x<itemNumber.split("-").length; x++){
+            for(let y=0; y<itemNumber.split("-")[x].length; y++){
+                if(isNaN(itemNumber.split("-")[x][y])){
+                    test = false;
+                }
+                if(itemNumber.split("-")[x][y]==" "){
+                    test = false;
+                }
+            }
+        }
+        if(test){
+            formatItemNumber(" " + itemNumber, paragraph)
+        }
+    }
+    let lowTemporalItemNumber = function(itemNumber, paragraph){
+        let test = true;
+        if(itemNumber.split("-")[1].length!="4"){
+            test = false;
+        }
+        for(let x=0; x<itemNumber.split("-").length; x++){
+            for(let y=0; y<itemNumber.split("-")[x].length; y++){
+                if(isNaN(itemNumber.split("-")[x][y])){
+                    test = false;
+                }
+                if(itemNumber.split("-")[x][y]==" "){
+                    test = false;
+                }
+            }
+        }
+        if(test){
+            formatItemNumber(" " + itemNumber, paragraph)
+        }
+    }
+    let formatItemNumber = function(itemNumber, paragraph){
+        let numberOfItems = $(paragraph).html().split(itemNumber)[0].split("<span class='item-number'>").length-1;
+        let paragraphHtml = $(paragraph).html().split(itemNumber)[0] + " <span class='item-number'>" + itemNumber.split(" ")[1] + "</span>&nbsp" + $(paragraph).html().split(itemNumber)[1];
+        $(paragraph).html(paragraphHtml)
+        let para = document.getElementById($(paragraph).attr("id"))
+        let range = document.createRange()
+        let selection = window.getSelection()
+        range.setStart(para.childNodes[numberOfItems*2+2], 1)
+        range.collapse(true)
+    
+        selection.removeAllRanges()
+        selection.addRange(range)
+    }
+    let enterKeyPressed;
+    buttons.saveButton = function(){
+        $("#save").on("click",async function(){
+            let updatedObject = await updateDatabaseObject("File","<%=file._id%>",{text: text})
+        })
+    }
+    buttons.saveButton();
+    let onInput = function(){
+        $(".text").on("input",function(){
+            for(let x=1; x<$(this).html().split("Item# ").length; x++){
+                if(!$(this).html().split("Item# ")[x].startsWith("<span")){
+                    if($(this).html().split("Item# ")[x].startsWith("-")){
+                        highTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,6),this)
+                    }
+                    if($(this).html().split("Item# ")[x].charAt(2)=="-"){
+                        mediumTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,7),this)
+                    }
+                    if($(this).html().split("Item# ")[x].charAt(4)=="-"){
+                        lowTemporalItemNumber($(this).html().split("Item# ")[x].substr(0,9),this)
+                    }
+                }
+            }
+            if($(this).text().includes("BLACKBOX")){
+                $(this).removeClass();
+                $(this).addClass("text")
+                $(this).addClass("black-box")
+                $(this).html($(this).html().replace("BLACKBOX",""))
+            }
+            if($(this).text().includes("PARAGRAPH")){
+                $(this).removeClass();
+                $(this).addClass("paragraph")
+                $(this).addClass("text")
+                $(this).html($(this).html().replace("PARAGRAPH",""))
+            }
+            text[parseInt($(this).attr("id").split("text-")[1])].content = $(this).html();
+            text[parseInt($(this).attr("id").split("text-")[1])].type = $(this).attr("class").split("text ")[1];
+        })
+        $(".text").on("keydown",function(e){
+            let x = parseInt($(this).attr("id").split("text-")[1]);
+            if (e.keyCode == 8){
+                if(($(this).text() == "")){
+                    text.splice(x,1);
+                    $("#text-"+x).remove();
+                    for(let y=x+1; y<$(".text").length+1; y++){
+                        $("#text-"+y).attr("id","text-"+(y-1));
+                    }
+                    $(".text").off("input")
+                    $(".text").off("keydown");
+                    $(".text").off("keyup");
+                    onInput();
+                }
+            }
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                if(!enterKeyPressed){
+                    enterKeyPressed = true;
+                    text.splice(x+1,0,{type:"paragraph",content:""});
+                    for(let y=$(".text").length-1; y>x; y--){
+                        $(`#text-${y}`).attr("id",`text-${y+1}`)
+                    }
+                    $(".text").off("input")
+                    $(".text").off("keydown");
+                    $(".text").off("keyup");
+                    $(this).after(`<p id="text-${x+1}" class="text ${text[x+1].type}" contenteditable="true">${text[x+1].content}</p>`)
+                    $("#text-"+(x+1)).focus();
+                    onInput();
+                }
+            }
+            if(e.keyCode == 38){
+                if(x>0){
+                    $("#text-"+(x-1)).focus();
+                }else{
+                    text.splice(0,0,{type:"paragraph",content:""});
+                    for(let x=$(".text").length-1; x>-1; x--){
+                        $(`#text-${x}`).attr("id",`text-${x+1}`)
+                    }
+                    $("#text-1").before(`<p id="text-0" class="text ${text[0].type}" contenteditable="true">${text[0].content}</p>`)
+                    $("#text-0").focus();
+                    $(".text").off("input")
+                    $(".text").off("keydown");
+                    $(".text").off("keyup");
+                    onInput();
+                }
+            }
+            if(e.keyCode == 40){
+                if(x<text.length){
+                    $("#text-"+(x+1)).focus();
+                }
+            }
+        })
+        $(".text").on("keyup",function(e){
+            if (e.keyCode == 13) {
+                enterKeyPressed = false;
+            }
+        })
+    }
+    onInput();
+</script>

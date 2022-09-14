@@ -3,10 +3,15 @@ const mongoose = require("mongoose");
 const schema = new mongoose.Schema(
   {
     name: {type: String},
-    clearanceLevel: {type: Number},
     type: {type: String},
-    author: {type: mongoose.Schema.Types.ObjectId, ref: "File"},
+    number: {type: String},
+    procedureClass: {type: String},
+    clearanceLevel: {type: Number},
+    clearanceLevelString: {type: String},
+    clearanceExceptions: [],
+    author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     status: {type: String}, //inReview, inProgress, inObservation, dormant
+    text: [{type:{type: String},content:{type: String}}]
   },
   {timestamps: true}
 )
