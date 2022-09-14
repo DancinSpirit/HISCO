@@ -20,6 +20,7 @@
     <%}%>
     <p class="add-file"><i class="fa-sharp fa-solid fa-plus"></i>Add New File</p>  
     <%}%>
+    <p class="return"><i class="arrow fa-solid fa-arrow-left-long"></i>Move to Containing Folder</p>
 </div>
 <script>
     $(".editable").on("input",function(){
@@ -37,9 +38,18 @@
         })  
     }  
     buttons.openFolder();
+    buttons.openFile = function(){
+        $(".database-file").on("click",function(){
+        states = ["file"]
+        databaseObjects = [[{name: "File",id:folder.files[parseInt($(this).attr("id"))]._id}]];
+        window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "File", "/file");
+        loadStates();
+        })  
+    }  
+    buttons.openFile();
     buttons.addFolder = function(){
         $(".add-folder").on("click",async function(){
-            let newFolder = await createDatabaseObject("Folder",{name:"New Folder"})
+            let newFolder = await createDatabaseObject("Folder",{name:"New Folder",location:folder._id})
             let folders = folder.folders;
             folders.push(newFolder)
             console.log(folders);
@@ -51,4 +61,18 @@
         })
     }
     buttons.addFolder();
+    buttons.returnToContainingFolder = function(){
+        $(".return").on("click", function(){
+            if(folder.location=="631fa130dfbd34482cc0795d"){
+                states=["home"];
+                databaseObjects = [[{name: "Folder",id:"631fa130dfbd34482cc0795d"}]]
+                window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Home", "/home");
+            }else{
+                databaseObjects = [[{name: "Folder",id:folder.location}]]
+                window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Folder", "/folder");
+            }
+            loadStates();
+        })
+    }
+    buttons.returnToContainingFolder();
 </script>

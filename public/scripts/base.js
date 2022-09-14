@@ -8,6 +8,9 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
 }
 let folder;
 let buttons = {};
+let text;
+let enterKeyPressed;
+let functions = {};
 
 const login = async function(username, password){
     return new Promise((resolve)=>{

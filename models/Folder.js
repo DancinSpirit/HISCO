@@ -7,6 +7,7 @@ const schema = new mongoose.Schema(
     files:[{type: mongoose.Schema.Types.ObjectId, ref: "File"}],
     folders:[{type: mongoose.Schema.Types.ObjectId, ref: "Folder"}],
     clearanceLevel: {type: Number, default: 1},
+    location: {type: mongoose.Schema.Types.ObjectId, ref: "Folder"},
     type: {type: String, default: "official"} //official, logs, review
   },
   {timestamps: true}

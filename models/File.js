@@ -11,7 +11,8 @@ const schema = new mongoose.Schema(
     clearanceExceptions: [],
     author: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     status: {type: String}, //inReview, inProgress, inObservation, dormant
-    text: [{type:{type: String},content:{type: String}}]
+    text: [{type:{type: String},content:{type: String}}],
+    location: {type: mongoose.Schema.Types.ObjectId, ref: "Folder"}
   },
   {timestamps: true}
 )

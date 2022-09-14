@@ -1,5 +1,5 @@
 <div id="file-bar">
-    HISCO File Editor <button id="save">Save</button>
+    HISCO File Editor  <button id="return"><i class="fa-solid fa-arrow-left-long"></i></button><button id="save">Save</button><button id="submit">Submit</button>
 </div>
 <div id="file-container">
     <div id="file">
@@ -18,8 +18,8 @@
     </div>
 </div>
 <script>
-    let text = JSON.parse(`<%-JSON.stringify(file.text)%>`); 
-    let highTemporalItemNumber = function(itemNumber, paragraph){
+    text = JSON.parse(`<%-JSON.stringify(file.text)%>`); 
+    functions.highTemporalItemNumber = function(itemNumber, paragraph){
         let test = true;
         if(itemNumber.split("-")[1].length!="2"){
             test = false;
@@ -38,10 +38,10 @@
             }
         }
         if(test){
-            formatItemNumber(" " + itemNumber, paragraph)
+            functions.formatItemNumber(" " + itemNumber, paragraph)
         }
     }
-    let mediumTemporalItemNumber = function(itemNumber, paragraph){
+    functions.mediumTemporalItemNumber = function(itemNumber, paragraph){
         let test = true;
         if(itemNumber.split("-")[1].length!="4"){
             test = false;
@@ -57,10 +57,10 @@
             }
         }
         if(test){
-            formatItemNumber(" " + itemNumber, paragraph)
+            functions.formatItemNumber(" " + itemNumber, paragraph)
         }
     }
-    let lowTemporalItemNumber = function(itemNumber, paragraph){
+    functions.lowTemporalItemNumber = function(itemNumber, paragraph){
         let test = true;
         if(itemNumber.split("-")[1].length!="4"){
             test = false;
@@ -76,10 +76,10 @@
             }
         }
         if(test){
-            formatItemNumber(" " + itemNumber, paragraph)
+            functions.formatItemNumber(" " + itemNumber, paragraph)
         }
     }
-    let formatItemNumber = function(itemNumber, paragraph){
+    functions.formatItemNumber = function(itemNumber, paragraph){
         let numberOfItems = $(paragraph).html().split(itemNumber)[0].split("<span class='item-number'>").length-1;
         let paragraphHtml = $(paragraph).html().split(itemNumber)[0] + " <span class='item-number'>" + itemNumber.split(" ")[1] + "</span>&nbsp" + $(paragraph).html().split(itemNumber)[1];
         $(paragraph).html(paragraphHtml)
@@ -92,25 +92,34 @@
         selection.removeAllRanges()
         selection.addRange(range)
     }
-    let enterKeyPressed;
     buttons.saveButton = function(){
         $("#save").on("click",async function(){
             let updatedObject = await updateDatabaseObject("File","<%=file._id%>",{text: text})
         })
     }
     buttons.saveButton();
-    let onInput = function(){
+    buttons.returnButton = function(){
+        $("#return").on("click",async function(){
+            console.log()
+            states = ["folder"]
+            databaseObjects = [[{name: "Folder",id: "<%=file.location%>"}]];
+            window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Folder", "/folder");
+            loadStates();
+        })
+    }
+    buttons.returnButton();
+    functions.onInput = function(){
         $(".text").on("input",function(){
             for(let x=1; x<$(this).html().split("Item# ").length; x++){
                 if(!$(this).html().split("Item# ")[x].startsWith("<span")){
                     if($(this).html().split("Item# ")[x].startsWith("-")){
-                        highTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,6),this)
+                        functions.highTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,6),this)
                     }
                     if($(this).html().split("Item# ")[x].charAt(2)=="-"){
-                        mediumTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,7),this)
+                        functions.mediumTemporalItemNumber($(this).text().split("Item# ")[x].substr(0,7),this)
                     }
                     if($(this).html().split("Item# ")[x].charAt(4)=="-"){
-                        lowTemporalItemNumber($(this).html().split("Item# ")[x].substr(0,9),this)
+                        functions.lowTemporalItemNumber($(this).html().split("Item# ")[x].substr(0,9),this)
                     }
                 }
             }
@@ -141,7 +150,7 @@
                     $(".text").off("input")
                     $(".text").off("keydown");
                     $(".text").off("keyup");
-                    onInput();
+                    functions.onInput();
                 }
             }
             if (e.keyCode == 13) {
@@ -157,7 +166,7 @@
                     $(".text").off("keyup");
                     $(this).after(`<p id="text-${x+1}" class="text ${text[x+1].type}" contenteditable="true">${text[x+1].content}</p>`)
                     $("#text-"+(x+1)).focus();
-                    onInput();
+                    functions.onInput();
                 }
             }
             if(e.keyCode == 38){
@@ -173,7 +182,7 @@
                     $(".text").off("input")
                     $(".text").off("keydown");
                     $(".text").off("keyup");
-                    onInput();
+                    functions.onInput();
                 }
             }
             if(e.keyCode == 40){
@@ -188,5 +197,5 @@
             }
         })
     }
-    onInput();
+    functions.onInput();
 </script>

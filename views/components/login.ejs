@@ -9,21 +9,24 @@
     <img class="big-logo" src="/HISCO_Logo.png">
 </div>
 <script>
-    $("#login-form").submit(async function(e){
-        e.preventDefault();
-        let attempt = await login($("#username-input").val(),$("#password-input").val())
-        if(attempt.loggedIn){
-            states = ["home"]
-            databaseObjects = [[{name:"Folder",id:"631fa130dfbd34482cc0795d"}]];
-            customData = [false];
-            window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Home", "/home");
-            await loadStates();
-        }else{
-            if($("#error-message").length){
-                $("#error-message").text(attempt.error)
+    functions.login = function(){
+        $("#login-form").submit(async function(e){
+            e.preventDefault();
+            let attempt = await login($("#username-input").val(),$("#password-input").val())
+            if(attempt.loggedIn){
+                states = ["home"]
+                databaseObjects = [[{name:"Folder",id:"631fa130dfbd34482cc0795d"}]];
+                customData = [false];
+                window.history.pushState({states:states,databaseObjects: databaseObjects,customData:customData}, "Home", "/home");
+                await loadStates();
             }else{
-                $("#login-form").append(`<p id='error-message'>${attempt.error}</p>`) 
+                if($("#error-message").length){
+                    $("#error-message").text(attempt.error)
+                }else{
+                    $("#login-form").append(`<p id='error-message'>${attempt.error}</p>`) 
+                }
             }
-        }
-    })
+        })
+    }
+    functions.login();
 </script>
